@@ -2,6 +2,7 @@ import 'package:access_control/presentation/providers/dolar_provider.dart';
 import 'package:access_control/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -30,13 +31,49 @@ class _HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<_HomeView> {
+  
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
+    
+    _controller.addListener(_formatText);
+   
     ref.read(nowGetDolarProvider.notifier).loadDolarData();    
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+void _formatText() {
+  _controller.removeListener(_formatText); // Elimina el listener temporalmente
+
+  String text = _controller.text.replaceAll(RegExp('[^0-9]'), '');
+  if (text.isEmpty) {
+    _controller.text = '';
+  } else {
+    double number = double.parse(text) / 100;
+    // Solo formatea si el número es mayor que 0
+    if (number > 0) {
+      String newText = NumberFormat.currency(locale: 'en_US', symbol: '\$  ', decimalDigits: 2).format(number);
+      _controller.text = newText;
+    } else {
+      _controller.text = '';
+    }
+  }
+
+  // Intenta mantener la posición del cursor correctamente
+  if (_controller.text.isNotEmpty) {
+    int cursorPosition = _controller.text.length; // Coloca el cursor al final del texto formateado
+    _controller.selection = TextSelection.fromPosition(TextPosition(offset: cursorPosition));
+  }
+
+  _controller.addListener(_formatText); // Vuelve a añadir el listener
+}
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +83,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return Column(
       children: [
         
-        const TextInputCustom(),
+         TextInputCustom(controller: _controller,),
         
         Expanded(
           child: GridView.builder(
@@ -69,8 +106,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 }
 
 class TextInputCustom extends StatelessWidget {
+
+  final TextEditingController controller;
+
   const TextInputCustom({
-    super.key,
+    super.key, required this.controller,
   });
 
   @override
@@ -91,6 +131,9 @@ class TextInputCustom extends StatelessWidget {
       child:  TextField(
         decoration: inputDecoration,
         autofocus: false,
+        style: const TextStyle(fontSize: 24),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        controller: controller,
       ),
     );
   }
