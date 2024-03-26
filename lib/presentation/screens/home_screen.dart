@@ -1,8 +1,6 @@
 import 'package:access_control/presentation/providers/dolar_provider.dart';
 import 'package:access_control/presentation/widgets/widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,8 +11,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  const Scaffold(
-      body:  _HomeView(),
+    return   Scaffold(
+      appBar: AppBar(
+        title: const Text('DolarPy'),
+      ),
+      body:  const _HomeView(),
     );
   }
 }
@@ -44,33 +45,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     return Column(
       children: [
-         SizedBox(
-          height: 270,
-           child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                height: 170,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(  
-                    bottomLeft:  Radius.circular(32) , bottomRight: Radius.circular(30)),
-                  color :Color(0xFFCFE8FB),
-                ),
-              ),
-              Positioned(
-                top: 120,
-                child: Container(
-                  height: 140,
-                  width: 350,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFF118EEA),
-                  ),
-              ))
-              ]
-            ),
-         ),
         
+        const TextInputCustom(),
         
         Expanded(
           child: GridView.builder(
@@ -88,6 +64,34 @@ class _HomeViewState extends ConsumerState<_HomeView> {
           ),
         ),
       ]
+    );
+  }
+}
+
+class TextInputCustom extends StatelessWidget {
+  const TextInputCustom({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var outlineInputBorder = OutlineInputBorder(
+            borderSide: const BorderSide(width: 2.0),
+            borderRadius: BorderRadius.circular(10.0)
+          );
+    var inputDecoration = InputDecoration(
+          hintText: "ingrese monto",
+          labelText: "Monto",
+          suffixIcon: const Icon(Icons.currency_exchange),
+          border: outlineInputBorder,
+          labelStyle: const TextStyle(fontWeight: FontWeight.w500 , fontSize:24.0)
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child:  TextField(
+        decoration: inputDecoration,
+        autofocus: false,
+      ),
     );
   }
 }
