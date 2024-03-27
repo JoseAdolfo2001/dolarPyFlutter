@@ -30,7 +30,7 @@ class _HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<_HomeView> {
-
+  String _currentSortBy = 'venta';
   @override
   void initState() {
     super.initState();
@@ -47,18 +47,39 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       children: [
         
         const TextInputCustom(),
-        
+
+        DropdownButton<String>(
+          value: _currentSortBy,
+          underline: Container(
+            height: 2,
+            color: const Color.fromARGB(255, 0, 0, 0),
+          ),
+          icon: Icon(Icons.arrow_downward, color: const Color.fromARGB(255, 0, 0, 0)),
+          onChanged: (String? newValue) {
+            setState(() {
+              _currentSortBy = newValue!;
+              ref.read(nowGetDolarProvider.notifier).sortDataBy(_currentSortBy);
+            });
+          },
+          items: <String>['venta', 'compra']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value, style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
+            );
+          }).toList(),
+        ),
         Expanded(
-          child: GridView.builder(
-          padding: const EdgeInsets.all(16.0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            child: GridView.builder(
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 10,
               mainAxisSpacing:10,
               childAspectRatio: 33/34,
             ), 
-          itemCount: nowDolarQuote.financial.length,
-          itemBuilder: (context , index){
+            itemCount: nowDolarQuote.financial.length,
+            itemBuilder: (context , index){
             return  CardDolarExchangev2(finalcialName: nowDolarQuote.financial[index],);
           }
           ),

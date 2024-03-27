@@ -1,16 +1,18 @@
 
 
-class QuoteDolar{
-
+class QuoteDolar {
   final List<FinancialName> financial;
 
-  QuoteDolar({
-    required this.financial
-  });
+  QuoteDolar({required this.financial});
 
+  QuoteDolar copyWith({List<FinancialName>? financial}) {
+    return QuoteDolar(
+      financial: financial ?? this.financial,
+    );
+  }
 }
 
-class FinancialName{
+class FinancialName {
   final String entidad;
   final String compra;
   final String venta;
@@ -18,9 +20,22 @@ class FinancialName{
   FinancialName({
     required this.entidad,
     required this.compra,
-    required this.venta
+    required this.venta,
   });
+
+  FinancialName copyWith({
+    String? entidad,
+    String? compra,
+    String? venta,
+  }) {
+    return FinancialName(
+      entidad: entidad ?? this.entidad,
+      compra: compra ?? this.compra,
+      venta: venta ?? this.venta,
+    );
+  }
 }
+
 
 
 
