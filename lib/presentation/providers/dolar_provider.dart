@@ -17,12 +17,24 @@ final nowGetDolarProvider = StateNotifierProvider<DolarPyNotifier , QuoteDolar>(
 class DolarPyNotifier extends StateNotifier <QuoteDolar>{
 
   final DolarPyRepositorieImpl repository;
+  QuoteDolar? data;
 
   DolarPyNotifier({required this.repository}) : super(QuoteDolar(financial: []));
 
   Future <void> loadDolarData() async {
-    final data  = await repository.getDollarQuote();
-    state = data;
+    data  = await repository.getDollarQuote();
+    state = data!;
   }
+
+void sortArray(){
+  // Clonamos la lista actual y la ordenamos
+  List<FinancialName> sortedFinancial = List<FinancialName>.from(data!.financial)..sort((a, b) => a.compra.compareTo(b.venta));
+
+  // Creamos una nueva instancia de QuoteDolar con la lista ordenada
+  QuoteDolar newData = QuoteDolar(financial: sortedFinancial);
+
+  // Actualizamos el estado con la nueva instancia
+  state = newData;
+}
 
 }

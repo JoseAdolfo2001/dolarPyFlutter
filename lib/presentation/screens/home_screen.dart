@@ -85,7 +85,9 @@ void _formatText() {
         
         TextInputCustom(controller: _controller,),
 
-        TextButton(onPressed: (){}, child: const Text("cotizar")),
+        TextButton(onPressed: (){
+          ref.read(nowGetDolarProvider.notifier).sortArray();
+        }, child: const Text("cotizar")),
         
         Expanded(
           child: GridView.builder(
