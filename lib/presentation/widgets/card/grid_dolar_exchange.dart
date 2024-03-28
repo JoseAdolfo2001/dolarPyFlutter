@@ -12,7 +12,7 @@ class CardDolarExchangev2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Card(
-      color: const Color(0xFFCFE8FB),
+      color: const Color(0xFFD8F8D4),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
@@ -23,7 +23,7 @@ class CardDolarExchangev2 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [ 
               const SizedBox(height: 15.0,),
-              const Icon(Icons.food_bank_outlined ,color: Color(0xFF118EEA),size: 32.0),
+              const Icon(Icons.food_bank_outlined ,color: Colors.black,size: 32.0),
               const SizedBox(height: 8.0,),
               TextFormat(text:formatFinanciedName(finalcialName.entidad) , size: 16 , fontWeight: FontWeight.bold,),
               const SizedBox(height: 4.0,),             
