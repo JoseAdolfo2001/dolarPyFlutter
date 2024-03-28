@@ -18,7 +18,7 @@ class  TextFormat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style:  TextStyle(fontSize: size , fontWeight: fontWeight , color: const Color(0xFF118EEA)),
+      style:  TextStyle(fontSize: size , fontWeight: fontWeight , color: Colors.black),
     );
   }
 }

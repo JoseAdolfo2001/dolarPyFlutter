@@ -83,7 +83,9 @@ void _formatText() {
     return Column(
       children: [
         
-         TextInputCustom(controller: _controller,),
+        TextInputCustom(controller: _controller,),
+
+        TextButton(onPressed: (){}, child: const Text("cotizar")),
         
         Expanded(
           child: GridView.builder(
@@ -91,7 +93,7 @@ void _formatText() {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 10,
-              mainAxisSpacing:10,
+                mainAxisSpacing:10,
               childAspectRatio: 33/34,
             ), 
           itemCount: nowDolarQuote.financial.length,
