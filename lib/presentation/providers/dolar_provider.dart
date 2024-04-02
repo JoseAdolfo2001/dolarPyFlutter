@@ -5,12 +5,18 @@ import 'package:access_control/infraestructure/repositories/dolarpy_repository_i
 import 'package:access_control/presentation/providers/dolarpy_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
+// notifica cuando se procesa todo la llamada al servicio
 final nowGetDolarProvider = StateNotifierProvider<DolarPyNotifier , QuoteDolar>((ref) {
 
   final repository = ref.watch(movieRepositoryProvider);
 
   return DolarPyNotifier(repository: repository);
 });
+
+// notifica cuando se ordena la lista
+
+final segmentedControllerProvider =  StateProvider((ref) => 0);
 
 // State notifier -> Notifica estados
 
@@ -23,18 +29,16 @@ class DolarPyNotifier extends StateNotifier <QuoteDolar>{
 
   Future <void> loadDolarData() async {
     data  = await repository.getDollarQuote();
-    state = data!;
+    state = sortArrayByCompraOrVenta(true);
   }
 
-void sortArray(){
-  // Clonamos la lista actual y la ordenamos
-  List<FinancialName> sortedFinancial = List<FinancialName>.from(data!.financial)..sort((a, b) => a.compra.compareTo(b.venta));
+QuoteDolar sortArrayByCompraOrVenta(bool sortByCompra) {
+  // Determinar el criterio de ordenamiento en base al valor de sortByCompra
+  List<FinancialName> sortedFinancial = List<FinancialName>.from(data!.financial)
+    ..sort((a, b) => sortByCompra ? a.compra.compareTo(b.compra) : a.venta.compareTo(b.venta));
 
   // Creamos una nueva instancia de QuoteDolar con la lista ordenada
-  QuoteDolar newData = QuoteDolar(financial: sortedFinancial);
-
-  // Actualizamos el estado con la nueva instancia
-  state = newData;
+  return QuoteDolar(financial: sortedFinancial);
 }
 
 }

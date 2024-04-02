@@ -1,3 +1,4 @@
+import 'package:access_control/config/router/app_router.dart';
 import 'package:access_control/presentation/providers/dolar_provider.dart';
 import 'package:access_control/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ void _formatText() {
     _controller.text = '';
   } else {
     double number = double.parse(text) / 100;
-    // Solo formatea si el número es mayor que 0
+
     if (number > 0) {
       String newText = NumberFormat.currency(locale: 'en_US', symbol: '\$  ', decimalDigits: 2).format(number);
       _controller.text = newText;
@@ -66,13 +67,26 @@ void _formatText() {
     }
   }
 
-  // Intenta mantener la posición del cursor correctamente
   if (_controller.text.isNotEmpty) {
-    int cursorPosition = _controller.text.length; // Coloca el cursor al final del texto formateado
+    int cursorPosition = _controller.text.length;
     _controller.selection = TextSelection.fromPosition(TextPosition(offset: cursorPosition));
   }
 
-  _controller.addListener(_formatText); // Vuelve a añadir el listener
+  _controller.addListener(_formatText); 
+}
+
+void _showDialog(){
+  showDialog(context: context, 
+  builder: (context){
+      return  AlertDialog(
+        title: const Text("Cotizaciones dolar"),
+        content: Container(
+          width: double.maxFinite,
+          height: 1000,
+          child: const Text("hola"),
+        ),
+      );
+    });
 }
 
   @override
@@ -80,14 +94,21 @@ void _formatText() {
 
     final nowDolarQuote = ref.watch(nowGetDolarProvider);
 
+    
+
     return Column(
       children: [
         
         TextInputCustom(controller: _controller,),
 
-        TextButton(onPressed: (){
-          ref.read(nowGetDolarProvider.notifier).sortArray();
-        }, child: const Text("cotizar")),
+        ElevatedButton(
+          onPressed: (){
+            appRouter.push('/quote' , extra: nowDolarQuote);
+        }, child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Text("cotizar" , 
+             style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),),
+        )),
         
         Expanded(
           child: GridView.builder(
@@ -142,3 +163,4 @@ class TextInputCustom extends StatelessWidget {
     );
   }
 }
+
