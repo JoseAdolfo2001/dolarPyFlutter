@@ -56,8 +56,11 @@ void _formatText() {
   String text = _controller.text.replaceAll(RegExp('[^0-9]'), '');
   if (text.isEmpty) {
     _controller.text = '';
+
   } else {
     double number = double.parse(text) / 100;
+    ref.read(miValorProvider.notifier).state = number;
+
 
     if (number > 0) {
       String newText = NumberFormat.currency(locale: 'en_US', symbol: '\$  ', decimalDigits: 2).format(number);

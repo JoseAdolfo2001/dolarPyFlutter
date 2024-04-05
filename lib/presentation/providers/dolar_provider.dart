@@ -18,6 +18,9 @@ final nowGetDolarProvider = StateNotifierProvider<DolarPyNotifier , QuoteDolar>(
 
 final segmentedControllerProvider =  StateProvider((ref) => 0);
 
+final miValorProvider = StateProvider<double>((ref) => 0);
+
+
 // State notifier -> Notifica estados
 
 class DolarPyNotifier extends StateNotifier <QuoteDolar>{
