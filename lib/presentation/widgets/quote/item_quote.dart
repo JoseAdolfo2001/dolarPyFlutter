@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 class ItemQouote extends StatelessWidget {
   final FinancialName financialName;
   final int typeOperation;
+  final double valueDolar;
   const ItemQouote({
     super.key, 
     required this.financialName,
-    required this.typeOperation
+    required this.typeOperation,
+    required this.valueDolar
     });
 
   @override
@@ -32,15 +34,15 @@ class ItemQouote extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextFormat(text: "Compra: Gs. ${removeDecimalFromString(financialName.compra)}" , fontWeight : FontWeight.normal  , size:12),
-              TextFormat(text: "Venta: Gs. ${removeDecimalFromString(financialName.venta)}" , fontWeight : FontWeight.normal  , size:12),
+              TextFormat(text: "Compra: Gs. ${formatNumber(financialName.compra)}" , fontWeight : FontWeight.normal  , size:14),
+              TextFormat(text: "Venta: Gs. ${formatNumber(financialName.venta)}" , fontWeight : FontWeight.normal  , size:14),
             ],
             
           ),
           const SizedBox(height: 8,),
 
-          const TextFormat(text: "Cotizacion a la compra" , fontWeight : FontWeight.bold  , size:14),
-          TextFormat(text: "Gs. ${typeSetText(typeOperation , financialName)}" , fontWeight: FontWeight.bold , size : 18,),
+          TextFormat(text: typeSetText(typeOperation) , fontWeight : FontWeight.bold  , size:14),
+          TextFormat(text: "Gs ${valueInGuaranies(valueDolar, financialName, typeOperation)}" , fontWeight: FontWeight.bold , size : 18,),
 
           const SizedBox(height: 12,),
         ],
@@ -48,14 +50,14 @@ class ItemQouote extends StatelessWidget {
     );
   }
 
-  String typeSetText(int index , FinancialName finalcial){
+  String typeSetText(int index){
       String text = "";
       if(index == 0 ){
-        text = finalcial.compra;
+        text = "Cotizacion a la compra";
       }else {
-        text = finalcial.venta;
+        text = "Cotizacion a la venta";
       }
-      return removeDecimalFromString(text);
+      return text;
   }
 
     String formatFinanciedName(String name){
@@ -79,10 +81,31 @@ class ItemQouote extends StatelessWidget {
 
   }
 
-  String removeDecimalFromString(String numberStr) {
+ String valueInGuaranies(double dolarValue , FinancialName finalcial , int indexControll){
+    double quoteDolarValue = 0.0;
+    if(indexControll == 0){
+      quoteDolarValue = double.tryParse(finalcial.compra) ?? 0.0;
+    }else{
+      quoteDolarValue = double.tryParse(finalcial.venta) ?? 0.0;
+    }
+    var valueGuaranies = dolarValue * quoteDolarValue;
+    return formatNumber(valueGuaranies.toString());
+ } 
+
+String formatNumber(String numberStr) {
   // Divide el string en dos partes basado en el punto decimal.
   List<String> parts = numberStr.split('.');
-  // Retorna solo la parte entera.
-  return parts[0];
+  // Obtiene la parte entera.
+  String integerPart = parts[0];
+
+  // Invierte la parte entera para facilitar la inserción de puntos.
+  String reversedIntegerPart = integerPart.split('').reversed.join('');
+  // Inserta un punto cada tres dígitos.
+  String formattedReversedIntegerPart = RegExp(r'.{1,3}').allMatches(reversedIntegerPart).map((match) => match.group(0)).join('.');
+  // Vuelve a invertir la cadena para obtener el formato correcto.
+  String formattedIntegerPart = formattedReversedIntegerPart.split('').reversed.join('');
+
+  // Retorna solo la parte entera formateada.
+  return formattedIntegerPart;
 }
 }

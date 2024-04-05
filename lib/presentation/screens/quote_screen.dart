@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// ignore: must_be_immutable
 class QuoteScreen extends ConsumerWidget {
   QuoteDolar dolarQuote;
 
@@ -16,6 +17,7 @@ class QuoteScreen extends ConsumerWidget {
   Widget build(BuildContext context , WidgetRef ref) {
     
     final segmentedControllIndex = ref.watch(segmentedControllerProvider);
+    final dolarValue = ref.watch(miValorProvider);
 
     return Scaffold(
         appBar: AppBar(title: const Text("Cotizaciones")),
@@ -28,12 +30,12 @@ class QuoteScreen extends ConsumerWidget {
               0: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: 16), // Ajusta a tus necesidades
-                child: Text("Compra"),
+                child: Text("Compra" , style: TextStyle(color: Colors.black),),
               ),
               1: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: 16), // Ajusta a tus necesidades
-                child: Text("Venta"),
+                child: Text("Venta" , style: TextStyle(color: Colors.black),),
               ),
             },
               onValueChanged: (int newValue) {
@@ -46,7 +48,8 @@ class QuoteScreen extends ConsumerWidget {
                     .sortArrayByCompraOrVenta(newValue == 0);
               },
             groupValue: segmentedControllIndex,
-            pressedColor: Colors.green.withOpacity(0.5),
+            pressedColor: Colors.green.withOpacity(0.1),
+            selectedColor: const Color(0xFFE1F0DA),
             unselectedColor: Colors.transparent,
             padding: const EdgeInsets.all(5),
           ),
@@ -56,30 +59,44 @@ class QuoteScreen extends ConsumerWidget {
           Expanded(
               child: _ListQuote(
             dolarQuote: dolarQuote,
-            index:segmentedControllIndex
+            index:segmentedControllIndex,
+            valueDolar: dolarValue,
           ))
         ]));
+  }
+
+  String calculateValue(double value , double quoteDolar){
+    var valueInGuaranies = value * quoteDolar;
+    return valueInGuaranies.toString();
   }
 }
 
 class _ListQuote extends StatelessWidget {
   final QuoteDolar dolarQuote;
   final int index;
+  final double valueDolar;
   const _ListQuote({
     super.key,
     required this.dolarQuote,
-    required this.index
+    required this.index,
+    required this.valueDolar
   });
 
   @override
   Widget build(BuildContext context) {
+    List<FinancialName> filterList = filterEmptyQuote(dolarQuote.financial);
     return ListView.builder(
         itemBuilder: (context, index) {
           return Container(
               margin: const EdgeInsetsDirectional.symmetric(
                   horizontal: 16, vertical: 12),
-              child: ItemQouote(financialName: dolarQuote.financial[index] , typeOperation: this.index,));
+              child: ItemQouote(financialName: filterList[index] , typeOperation: this.index, valueDolar: valueDolar,));
         },
-        itemCount: dolarQuote.financial.length);
+        itemCount: filterList.length);
+  }
+
+  List<FinancialName> filterEmptyQuote(List<FinancialName> financialName){
+    var finalcialFilter = financialName.where((quote) => quote.compra != "0.0").toList();
+    return finalcialFilter;
   }
 }
