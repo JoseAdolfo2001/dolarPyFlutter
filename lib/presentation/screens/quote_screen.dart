@@ -56,6 +56,11 @@ class QuoteScreen extends ConsumerWidget {
           const SizedBox(
             height: 6,
           ),
+
+          ValueToQuoteWidget(dolarValue: dolarValue.toString(),),
+
+          const SizedBox(height: 8,),
+
           Expanded(
               child: _ListQuote(
             dolarQuote: dolarQuote,
@@ -71,6 +76,46 @@ class QuoteScreen extends ConsumerWidget {
   }
 }
 
+class ValueToQuoteWidget extends StatelessWidget {
+  final String dolarValue;
+  const ValueToQuoteWidget({
+    super.key, required this.dolarValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      const Text(
+        'Monto a cotizar en guaraníes',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+      const SizedBox(height: 5),
+      Text(
+        '$dolarValue USD',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.green[900],
+        ),
+      ),
+    ],
+  ),
+);
+
+  }
+}
+
 class _ListQuote extends StatelessWidget {
   final QuoteDolar dolarQuote;
   final int index;
@@ -82,15 +127,24 @@ class _ListQuote extends StatelessWidget {
     required this.valueDolar
   });
 
+  
+
   @override
   Widget build(BuildContext context) {
     List<FinancialName> filterList = filterEmptyQuote(dolarQuote.financial);
     return ListView.builder(
         itemBuilder: (context, index) {
+          bool isBestQuote = false;
+          bool isBadQuote = false;
+          if(index == 0){
+            isBestQuote = true;
+          }else if(filterList[index].entidad == filterList.last.entidad) {
+              isBadQuote = true;
+          }
           return Container(
               margin: const EdgeInsetsDirectional.symmetric(
-                  horizontal: 16, vertical: 12),
-              child: ItemQouote(financialName: filterList[index] , typeOperation: this.index, valueDolar: valueDolar,));
+              horizontal: 16, vertical: 12),
+              child: ItemQouote(financialName: filterList[index] , typeOperation: this.index, valueDolar: valueDolar, isBestQuote: isBestQuote, isWorstQuote: isBadQuote,));
         },
         itemCount: filterList.length);
   }
